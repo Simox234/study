@@ -1,0 +1,211 @@
+## Exercice 2: Question de Cours
+
+### Commande pour créer un projet React:
+```bash
+npx create-react-app nom_du_projet
+```
+
+### Code à mettre dans la méthode map pour afficher les spécialités dans des éléments `<li>`:
+```jsx
+{specialités.map((spécialité, index) => <li key={index}>{spécialité}</li>)}
+```
+
+---
+
+## Exercice 3: Consommation API
+
+```jsx
+import React, { useState, useEffect } from "react";
+
+export default function ListeMedecins() {
+  const [medecins, setMedecins] = useState([]);
+
+  useEffect(() => {
+    fetch("https://localhost:3500/medecins")
+      .then((response) => response.json())
+      .then((data) => setMedecins(data))
+      .catch((error) => console.error("Erreur:", error));
+  }, []);
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Spécialité</th>
+        </tr>
+      </thead>
+      <tbody>
+        {medecins.map((medecin) => (
+          <tr key={medecin.id}>
+            <td>{medecin.id}</td>
+            <td>{medecin.nom}</td>
+            <td>{medecin.prenom}</td>
+            <td>{medecin.specialite}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+```
+
+---
+
+## Exercice 4: Composant AddMedecin
+
+```jsx
+import React, { useState } from "react";
+
+const specialites = [
+  { id: 1, nomSpécialité: "GENERALISTE" },
+  { id: 2, nomSpécialité: "CARDIOLOGUE" },
+  { id: 3, nomSpécialité: "GASTROLOGUE" },
+];
+
+export default function AddMedecin() {
+  const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
+  const [specialite, setSpecialite] = useState("");
+
+  const handleAfficher = () => {
+    alert(
+      `NOM: ${nom.toUpperCase()}, PRENOM: ${prenom}, SPECIALITE: ${specialite.toUpperCase()}`
+    );
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Nom"
+        value={nom}
+        onChange={(e) => setNom(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Prénom"
+        value={prenom}
+        onChange={(e) => setPrenom(e.target.value)}
+      />
+      <select
+        value={specialite}
+        onChange={(e) => setSpecialite(e.target.value)}
+      >
+        <option value="">Choisir une spécialité</option>
+        {specialites.map((sp) => (
+          <option key={sp.id} value={sp.nomSpécialité}>
+            {sp.nomSpécialité}
+          </option>
+        ))}
+      </select>
+      <button onClick={handleAfficher}>Afficher</button>
+    </div>
+  );
+}
+```
+
+---
+
+## Exercice 5: Redux et Routing
+
+### Créateurs d’actions:
+```javascript
+export const addMedecin = (medecin) => ({
+  type: "ADD_MEDECIN",
+  payload: medecin,
+});
+
+export const deleteMedecin = (id) => ({
+  type: "DELETE_MEDECIN",
+  payload: id,
+});
+```
+
+### Reducer:
+```javascript
+const reducerMedecin = (state = initState, action) => {
+  switch (action.type) {
+    case "ADD_MEDECIN":
+      return { ...state, medecins: [...state.medecins, action.payload] };
+    case "DELETE_MEDECIN":
+      return {
+        ...state,
+        medecins: state.medecins.filter((medecin) => medecin.id !== action.payload),
+      };
+    default:
+      return state;
+  }
+};
+export default reducerMedecin;
+```
+
+### Store:
+```javascript
+import { createStore } from "redux";
+import reducerMedecin from "./reducers/reducerMedecin";
+
+const store = createStore(reducerMedecin);
+export default store;
+```
+
+### Composant ListMedecins:
+```jsx
+import React from "react";
+import { useSelector } from "react-redux";
+
+export default function ListMedecins() {
+  const medecins = useSelector((state) => state.medecins);
+
+  return (
+    <ul>
+      {medecins.map((medecin) => (
+        <li key={medecin.id}>
+          {medecin.nom} {medecin.prenom} ({medecin.spécialité})
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### Routage dans App.js:
+```jsx
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Header from "./Header";
+import ListMedecins from "./ListMedecins";
+import AddMedecin from "./AddMedecin";
+import Accueil from "./Accueil";
+
+export default function App() {
+  return (
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Accueil />} />
+        <Route path="/listMedecins" element={<ListMedecins />} />
+        <Route path="/addMedecin" element={<AddMedecin />} />
+      </Routes>
+    </Router>
+  );
+}
+```
+
+### Composant Header:
+```jsx
+import React from "react";
+import { Link } from "react-router-dom";
+
+export default function Header() {
+  return (
+    <nav>
+      <Link to="/">Accueil</Link> | <Link to="/listMedecins">Liste</Link> | {" "}
+      <Link to="/addMedecin">Ajouter</Link>
+    </nav>
+  );
+}
+```
+
