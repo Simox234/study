@@ -1,0 +1,7 @@
+arrow function return par default
+
+hello = () => "Hello World!";
+
+const vehicles = ['mustang', 'f-150', 'expedition'];
+
+const [car, truck, suv] = vehicles;

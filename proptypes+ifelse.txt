@@ -1,0 +1,23 @@
+
+import PropTypes from 'prop-types'
+function study(props){
+ 
+    if(props.login){
+        return <h1>hello {props.name}</h1>
+    }else{
+        return <h1>please login</h1>
+    }
+}
+study.propTypes={
+    name:PropTypes.string,
+    login:PropTypes.bool,
+
+    
+
+}
+study.defaultProps={
+    name:"said",
+    login:true,
+ 
+}
+export default study

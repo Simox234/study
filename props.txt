@@ -1,0 +1,25 @@
+import PropTypes from 'prop-types'
+function study(props){
+ 
+    return(
+        <>
+        <div>
+            <h1>name : {props.name} </h1>
+            <h2>age : {props.age}</h2>
+            <h3>student :{props.istudent ? "yes" : "no"}</h3>
+        </div>
+        </>
+    );
+}
+study.propTypes={
+    name: PropTypes.string,
+    age: PropTypes.number,
+    istudent: PropTypes.bool,
+
+}
+study.defaultProps={
+    name:"quest",
+    age:12,
+    istudent:true,
+}
+export default study
