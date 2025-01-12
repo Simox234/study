@@ -1,0 +1,52 @@
+import Shop from './components/shop';
+import Blogs from './components/blogs';
+import Home from './components/home';
+import Layout from './components/layout';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+function App() {
+  
+
+  return (
+    
+      <BrowserRouter>
+      <Layout />
+        <Routes path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/shop" element={<Shop />} />
+        </Routes>
+      </BrowserRouter>
+   
+    
+  )
+}
+
+export default App
+
+
+===============================================================
+import { Outlet, Link } from "react-router-dom";
+
+const Layout = () => {
+  return (
+    <>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/blogs">Blogs</Link>
+          </li>
+          <li>
+            <Link to="/shop">Shop</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <Outlet />
+    </>
+  )
+};
+
+export default Layout;

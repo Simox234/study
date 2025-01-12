@@ -1,0 +1,59 @@
+import { useState } from 'react';
+import ReactDOM from 'react-dom/client';
+
+function MyForm() {
+  const [inputs, setInputs] = useState({});
+
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs(values => ({...values, [name]: value}))
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    alert(`your name ${inputs.username} age ${inputs.age} number ${inputs.number} name ${inputs.name}`);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>Enter your username:
+      <input 
+        type="text" 
+        name="username" 
+        value={inputs.username || ""} 
+        onChange={handleChange}
+      />
+      </label>
+      <label>Enter your name:
+      <input 
+        type="text" 
+        name="name" 
+        value={inputs.name || ""} 
+        onChange={handleChange}
+      />
+      </label>
+      <label>Enter your number:
+      <input 
+        type="number" 
+        name="number" 
+        value={inputs.number || ""} 
+        onChange={handleChange}
+      />
+      </label>
+      <label>Enter your age:
+        <input 
+          type="number" 
+          name="age" 
+          value={inputs.age || ""} 
+          onChange={handleChange}
+        />
+        </label>
+        <input type="submit" />
+    </form>
+  )
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<MyForm />);
+export default MyForm
