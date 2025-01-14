@@ -1,0 +1,205 @@
+Partie REDUX et Routing (18 points)
+Exercice 5
+on désire réaliser une application qui permet de faire la gestion des medecins,
+Les données des medecins vont être géré par un store REDUX.
+L’état initial de store est initialisé par une liste des medecins contenant les données initiales 
+suivantes
+const initState={
+medecins :[
+ {id:10,nom :"CHARAFI", prenom :"ALI", spécialité :"gastrologue" },
+ {id:11,nom :"CHARAFI", prenom :"ALI", spécialité :"gastrologue" }]
+ }
+Travail à faire :
+1) Créer les fonctions créateurs d’action add_Medecin et delete_Medecin
+2) Créer le reducer reducerMedecin,on traite les actions de type ADD_MEDECIN et 
+DELETE_MEDECIN
+3) Créer le store redux dans le fichier index.js
+4) Créer le composant ListMedecins qui affiche tous les médecins à partir du store 
+5) Créer le composant AddMedecin qui permet d’ajouter un medecin dans le store 
+Routage :
+on souhaite ajouter le routage a notre projet,on suppose que le composant Accueil est déjà créé
+(6pts)
+(2pts)
+(4pts)
+(2pts)
+(3pts)
+(3pts)
+Variante : V1 Page 4
+Office de la Formation Professionnelle et de la Promotion du Travail
+Direction Régionale des provinces du sud
+Composant path
+Accueil /
+ListMedecin /listMedecins
+AddMedecin /addMedecin
+6) Créer le composant Header contenant un menu de l’application
+7) Ajouter la partie routage dans le composant App pour les trois composants Accueil
+ListMedecins et AddMedecin, le composant Header doit être toujours affiché
+
+
+
+
+
+
+
+
+
+
+
+
+// src/actions/medecinActions.js
+export const addMedecin = (medecin) => ({
+    type: 'ADD_MEDECIN',
+    payload: medecin
+});
+
+export const deleteMedecin = (id) => ({
+    type: 'DELETE_MEDECIN',
+    payload: id
+});
+
+// src/reducers/medecinReducer.js
+const initState = {
+    medecins: [
+        { id: 10, nom: 'CHARAFI', prenom: 'ALI', specialite: 'gastrologue' },
+        { id: 11, nom: 'CHARAFI', prenom: 'ALI', specialite: 'gastrologue' }
+    ]
+};
+
+const reducerMedecin = (state = initState, action) => {
+    switch (action.type) {
+        case 'ADD_MEDECIN':
+            return {
+                ...state,
+                medecins: [...state.medecins, action.payload]
+            };
+        case 'DELETE_MEDECIN':
+            return {
+                ...state,
+                medecins: state.medecins.filter(medecin => medecin.id !== action.payload)
+            };
+        default:
+            return state;
+    }
+};
+
+export default reducerMedecin;
+
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import reducerMedecin from './reducers/medecinReducer';
+import App from './App';
+
+const store = createStore(reducerMedecin);
+
+ReactDOM.render(
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.getElementById('root')
+);
+
+// src/components/ListMedecins.js
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteMedecin } from '../actions/medecinActions';
+
+const ListMedecins = () => {
+    const medecins = useSelector(state => state.medecins);
+    const dispatch = useDispatch();
+
+    return (
+        <div>
+            <h2>Liste des Médecins</h2>
+            <ul>
+                {medecins.map(medecin => (
+                    <li key={medecin.id}>
+                        {medecin.nom} {medecin.prenom} - {medecin.specialite}
+                        <button onClick={() => dispatch(deleteMedecin(medecin.id))}>Supprimer</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default ListMedecins;
+
+// src/components/AddMedecin.js
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addMedecin } from '../actions/medecinActions';
+
+const AddMedecin = () => {
+    const [formData, setFormData] = useState({ id: '', nom: '', prenom: '', specialite: '' });
+    const dispatch = useDispatch();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        dispatch(addMedecin({
+            ...formData,
+            id: parseInt(formData.id)
+        }));
+        setFormData({ id: '', nom: '', prenom: '', specialite: '' });
+    };
+
+    return (
+        <div>
+            <h2>Ajouter un Médecin</h2>
+            <form onSubmit={handleSubmit}>
+                <input type="number" name="id" placeholder="ID" value={formData.id} onChange={handleChange} required />
+                <input type="text" name="nom" placeholder="Nom" value={formData.nom} onChange={handleChange} required />
+                <input type="text" name="prenom" placeholder="Prénom" value={formData.prenom} onChange={handleChange} required />
+                <input type="text" name="specialite" placeholder="Spécialité" value={formData.specialite} onChange={handleChange} required />
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    );
+};
+
+export default AddMedecin;
+
+// src/components/Header.js
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+const Header = () => {
+    return (
+        <nav>
+            <Link to="/">Accueil</Link>
+            <Link to="/listMedecins">Liste des Médecins</Link>
+            <Link to="/addMedecin">Ajouter un Médecin</Link>
+        </nav>
+    );
+};
+
+export default Header;
+
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import ListMedecins from './components/ListMedecins';
+import AddMedecin from './components/AddMedecin';
+import Accueil from './components/Accueil'; // Supposons qu'il existe déjà
+
+const App = () => {
+    return (
+        <Router>
+            <Header />
+            <Routes>
+                <Route path="/" element={<Accueil />} />
+                <Route path="/listMedecins" element={<ListMedecins />} />
+                <Route path="/addMedecin" element={<AddMedecin />} />
+            </Routes>
+        </Router>
+    );
+};
+
+export default App;
