@@ -1,0 +1,18 @@
+Exercice 1 :
+1) B
+2) B
+3) C
+4) C
+5) D
+6) B
+7) C
+8) B
+Exercice 2 :
+1) npm start ,npm run dev
+2) services.map((service)=>{
+    <div key={service}>
+    {service}
+    </div>
+})
+
+Exercice 3 :
